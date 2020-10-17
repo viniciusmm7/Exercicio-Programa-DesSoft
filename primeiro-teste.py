@@ -24,34 +24,38 @@ def pontuacao(pontos_player, baralho:list): # Função para calcular a pontuaç�
     return pontos_player
 
 def jogo():
-    nome=input('Digite seu nome: ')
-    fichas=int(input('Digite sua quantidade de fichas: '))
-    print('Nome: {}\nFichas: {}'.format(nome, fichas))
-    qtd_baralhos=int(input('Quantos baralhos deseja usar? 1, 6 ou 8? '))
 
-    while qtd_baralhos!=1 and qtd_baralhos!=6 and qtd_baralhos!=8:
+    # Adicionar quantidade de jogadores aqui:
+    # ---------------------------------------
+
+    nome=input('Digite seu nome: ') # Nome do jogador
+    fichas=int(input('Digite sua quantidade de fichas: ')) # Fichas iniciais
+    print('Nome: {}\nFichas: {}'.format(nome, fichas))
+    qtd_baralhos=int(input('Quantos baralhos deseja usar? 1, 6 ou 8? ')) # Quantidade de baralhos desejadas
+
+    while qtd_baralhos!=1 and qtd_baralhos!=6 and qtd_baralhos!=8: # Validando quantidade de baralhos
         print('Valor inválido, tente novamente')
         qtd_baralhos=int(input('Quantos baralhos deseja usar? 1, 6 ou 8? '))
 
     while fichas>0:
-        aposta=int(input('Faça sua aposta: '))
+        aposta=int(input('Faça sua aposta: ')) # Valor da aposta
         if aposta==0:
             break
 
-        while aposta>fichas:
+        while aposta>fichas: # Validando aposta
             print('Valor inválido, tente novamente')
             aposta=int(input('Faça sua aposta: '))
         
-        escolha=input('Escolha entre "Jogador", "Banco" ou "Empate": ')
+        escolha=input('Escolha entre "Jogador", "Banco" ou "Empate": ') # Escolhendo local da aposta
 
-        while escolha!='Jogador' and escolha!='Banco' and escolha!='Empate':
+        while escolha!='Jogador' and escolha!='Banco' and escolha!='Empate': # Validando escolha de local
             print('Escolha inválida, tente novamente')
             escolha=input('Escolha entre "Jogador", "Banco" ou "Empate": ')
         
-        cartas=['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']*4*qtd_baralhos
+        cartas=['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']*4*qtd_baralhos # Definindo o tamanho do baralho que será utilizado no jogo
 
-        pontos_jogador=0
-        pontos_banco=0
+        pontos_jogador=0 # Pontuação inicial do jogador
+        pontos_banco=0 # Pontuação inicial do banco
 
         # Pontuação banco no primeiro par de cartas:
         pontos_banco=pontuacao(pontos_banco, cartas)
@@ -63,11 +67,14 @@ def jogo():
         pontos_jogador=pontuacao(pontos_jogador, cartas)
         print('Pontos do jogador no primeiro par de cartas: {}'.format(pontos_jogador))
 
-        if pontos_banco<6:
+        # Adicionar regras adicionais para terceira carta aqui?
+        # -----------------------------------------------------
+
+        if pontos_banco<6: # Validando terceira carta banco
             pontos_banco=pontuacao(pontos_banco, cartas)
             print('Pontos do banco após a terceira carta: {}'.format(pontos_banco))
         
-        if pontos_jogador<6:
+        if pontos_jogador<6: # Validando terceira carta jogador
             pontos_jogador=pontuacao(pontos_jogador, cartas)
             print('Pontos do jogador após a terceira carta: {}'.format(pontos_jogador))
         
@@ -80,6 +87,10 @@ def jogo():
             vitoria='Empate'
 
         # Pagamento das apostas:
+
+        # Adicionar comissão aqui:
+        # ------------------------
+
         if escolha=='Jogador':
             if vitoria=='Jogador':
                 fichas+=aposta

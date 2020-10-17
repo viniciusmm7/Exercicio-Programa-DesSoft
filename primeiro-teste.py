@@ -4,144 +4,101 @@
 
 import random
 
-# Nome e fichas:
-nome=input('Digite seu nome: ')
+def valor_carta(baralho:list, posicao_carta:int): # Função para determinar o valor de cada carta
+    if baralho[posicao_carta]=='A':
+        return 1
+    elif baralho[posicao_carta]=='10' or baralho[posicao_carta]=='J' or baralho[posicao_carta]=='Q' or baralho[posicao_carta]=='K':
+        return 0
+    else:
+        return int(baralho[posicao_carta])
 
-fichas=int(input('Digite sua quantidade de fichas: '))
-
-print('Nome: {}\nFichas: {}'.format(nome, fichas))
-
-# Função para calcular o valor da carta:
-def valor_carta (x, y):
-  #sorteador (add e remover carta)
-  if x[y]=='A':
-    return 1
-
-  elif x[y]=='10' or x[y]=='J' or x[y]=='Q' or x[y]=='K':
-    return 0
-
-  else:
-    return int(x[y])
-
-# Jogo:
-while fichas>0:
-
-  # Valor da aposta:
-  aposta=int(input('Faça sua aposta: '))
-
-  if aposta==0:
-    break
-
-  # Condição para a aposta ser válida:
-  while aposta>fichas:
-    print('Valor inválido')
-    aposta=int(input('Faça sua aposta: '))
-
-  # Local da aposta:
-  escolha=input('Escolha entre "Jogador", "Banco" ou "Empate": ')
-
-  # Condição do local ser válido:
-  while escolha!='Jogador' and escolha!='Banco' and escolha!='Empate':
-    print('Escolha inválida')
-    escolha=input('Escolha entre "Jogador", "Banco" ou "Empate": ')
-
-  # Cartas:
-  cartas=['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']
-  cartas*=4
-  
-  pontos_jogador=0
-  pontos_banco=0
-  
-  # Valor das cartas:
-
-  """Par de cartas do Banco:"""
-  i=0
-  while i<2
-    # Gerando uma carta:
-    numero_carta=random.randint(0, len(cartas)-1)
-
-    # Adicionando a pontuação:
-    pontos_banco+=valor_carta(cartas, numero_carta)
-
-    # Removendo a carta da lista:
-    cartas.remove(cartas[numero_carta])
-    i+=1
-
-  """Par de cartas do Jogador:"""
-
-  numero_carta=random.randint(0, 49)
-  pontos_jogador+=valor_carta(cartas, numero_carta)
-  cartas.remove(cartas[numero_carta])
-
-  numero_carta=random.randint(0, 48)
-  pontos_jogador+=valor_carta(cartas, numero_carta)
-  cartas.remove(cartas[numero_carta])
-
-  pontos_banco=str(pontos_banco)
-  pontos_banco=pontos_banco[-1]
-  pontos_banco=int(pontos_banco)
-  print(pontos_banco)
-
-  i=47
-  if pontos_banco<6:
-      # Gerando uma nova carta:
-    numero_carta=random.randint(0, i)
-    i-=1
-      # Adicionando pontuação do banco:
-    pontos_banco+=valor_carta(cartas, numero_carta)
-
-      # Removendo a carta da lista:
-    cartas.remove(cartas[numero_carta])
-
-     
-
-    pontos_banco=str(pontos_banco)
-    pontos_banco=pontos_banco[-1]
-    pontos_banco=int(pontos_banco)
-  print(pontos_banco)
-
-  while pontos_jogador<6:
+def pontuacao(pontos_player, baralho:list): # Função para calcular a pontuação do player
+    numero_carta=random.randint(0, len(baralho)-1) # Gerando uma carta nova
+    pontos_player+=valor_carta(baralho, numero_carta) # Adicionando a pontuação
+    baralho.remove(baralho[numero_carta]) # Removendo a carta do baralho
     
-    # Adicionando pontuação do jogador:
-    pontos_jogador+=valor_carta(cartas, numero_carta)
+    pontos_player=str(pontos_player)
+    pontos_player=pontos_player[-1]
+    pontos_player=int(pontos_player)
 
-      # Removendo a carta da lista:
-    cartas.remove(cartas[numero_carta])
+    return pontos_player
 
-      # Gerando uma nova carta:
-    numero_carta=random.randint(0, i)
-    i-=1
+def jogo():
+    nome=input('Digite seu nome: ')
+    fichas=int(input('Digite sua quantidade de fichas: '))
+    print('Nome: {}\nFichas: {}'.format(nome, fichas))
+    qtd_baralhos=int(input('Quantos baralhos deseja usar? 1, 6 ou 8? '))
 
-    pontos_jogador=str(pontos_jogador)
-    pontos_jogador=pontos_jogador[-1]
-    pontos_jogador=int(pontos_jogador)
-  print(pontos_jogador)
+    while qtd_baralhos!=1 and qtd_baralhos!=6 and qtd_baralhos!=8:
+        print('Valor inválido, tente novamente')
+        qtd_baralhos=int(input('Quantos baralhos deseja usar? 1, 6 ou 8? '))
 
-  # Vitória:
-  if pontos_jogador>pontos_banco:
-    vitoria='Jogador'
-  elif pontos_banco>pontos_jogador:
-    vitoria='Banco'
-  else:
-    vitoria='Empate'
+    while fichas>0:
+        aposta=int(input('Faça sua aposta: '))
+        if aposta==0:
+            break
 
-    # Pagamento das apostas:
-  if escolha=='Jogador':
-    if vitoria=='Jogador':
-      fichas+=aposta
-    else:
-      fichas-=aposta
+        while aposta>fichas:
+            print('Valor inválido, tente novamente')
+            aposta=int(input('Faça sua aposta: '))
+        
+        escolha=input('Escolha entre "Jogador", "Banco" ou "Empate": ')
 
-  elif escolha=='Banco':
-    if vitoria=='Banco':
-      fichas+=0.95*aposta
-    else:
-      fichas-=aposta
+        while escolha!='Jogador' and escolha!='Banco' and escolha!='Empate':
+            print('Escolha inválida, tente novamente')
+            escolha=input('Escolha entre "Jogador", "Banco" ou "Empate": ')
+        
+        cartas=['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K']*4*qtd_baralhos
 
-  else:
-    if vitoria=='Empate':
-      fichas+=int(aposta*8)
-    else:
-      fichas-=aposta
+        pontos_jogador=0
+        pontos_banco=0
 
-print(fichas)
+        # Pontuação banco no primeiro par de cartas:
+        pontos_banco=pontuacao(pontos_banco, cartas)
+        pontos_banco=pontuacao(pontos_banco, cartas)
+        print('Pontos do banco no primeiro par de cartas: {}'.format(pontos_banco))
+
+        # Pontuação jogador no primeiro par de cartas:
+        pontos_jogador=pontuacao(pontos_jogador, cartas)
+        pontos_jogador=pontuacao(pontos_jogador, cartas)
+        print('Pontos do jogador no primeiro par de cartas: {}'.format(pontos_jogador))
+
+        if pontos_banco<6:
+            pontos_banco=pontuacao(pontos_banco, cartas)
+            print('Pontos do banco após a terceira carta: {}'.format(pontos_banco))
+        
+        if pontos_jogador<6:
+            pontos_jogador=pontuacao(pontos_jogador, cartas)
+            print('Pontos do jogador após a terceira carta: {}'.format(pontos_jogador))
+        
+        # Vitória:
+        if pontos_jogador>pontos_banco:
+            vitoria='Jogador'
+        elif pontos_banco>pontos_jogador:
+            vitoria='Banco'
+        else:
+            vitoria='Empate'
+
+        # Pagamento das apostas:
+        if escolha=='Jogador':
+            if vitoria=='Jogador':
+                fichas+=aposta
+            else:
+                fichas-=aposta
+
+        elif escolha=='Banco':
+            if vitoria=='Banco':
+                fichas+=0.95*aposta
+            else:
+                fichas-=aposta
+
+        else:
+            if vitoria=='Empate':
+                fichas+=int(aposta*8)
+            else:
+                fichas-=aposta
+        print('Suas fichas após rodada do jogo: {}'.format(fichas))
+    
+    print('Suas fichas após encerrar o jogo: {}'.format(fichas))
+
+jogo()

@@ -14,13 +14,14 @@ def valor_carta(baralho:list, posicao_carta:int): # Função para determinar o v
 
 def pontuacao(pontos_player, baralho:list): # Função para calcular a pontuação do player
     numero_carta=random.randint(0, len(baralho)-1) # Gerando uma carta nova
-    pontos_player+=valor_carta(baralho, numero_carta) # Adicionando a pontuação
+    x=valor_carta(baralho, numero_carta)
+    pontos_player+=x # Adicionando a pontuação
     baralho.remove(baralho[numero_carta]) # Removendo a carta do baralho
     
     if pontos_player>=10:
         pontos_player-=10
 
-    return pontos_player
+    return pontos_player, x
 
 def calcula_comissao(pagamento, num_baralhos, vencedor):
     comissao_j1=0.0129
@@ -82,11 +83,11 @@ def jogo():
     lista_fichas=[]
     while jogadores!='iniciar':
         nome=input('Digite seu nome, jogador {}: '.format(i)) # Nomes dos jogadores
-        fichas=int(input('Digite sua quantidade de fichas, jogador {}: '.format(i))) # Fichas de cada jogador
+        fichas=int(input('Digite sua quantidade de fichas com números, qualquer coisa diferente de um número dará um erro: ')) # Fichas de cada jogador
         print('\nNome jogador {}: {}\nFichas jogador {}: {}\n'.format(i, nome, i, fichas)) # Printando resultados obtidos
         lista_jogadores.append(nome)
         lista_fichas.append(fichas)
-        jogadores=input('Digite "iniciar" para começar o jogo ou digite qualquer bosta para adicionar mais um jogador: ')
+        jogadores=input('Digite "iniciar" para começar o jogo ou digite qualquer outra coisa para adicionar mais um jogador: ')
         i+=1
     
     # Quantidade de baralhos:
@@ -109,7 +110,7 @@ def jogo():
     while len(lista_fichas)>0:
         z=0
         while len(lista_apostas)<len(lista_jogadores):
-            aposta=int(input('Digite o valor que deseja apostar, {}: '.format(lista_jogadores[z]))) # Valor da aposta
+            aposta=int(input('Digite o valor que deseja apostar ou "0" para sair do jogo, {}: '.format(lista_jogadores[z]))) # Valor da aposta
             lista_apostas.append(aposta)
             if aposta==0:
                 lista_final.append(lista_fichas[z])
@@ -121,7 +122,7 @@ def jogo():
             while lista_apostas[z]>lista_fichas[z]: # Validando aposta
                 lista_apostas.pop(z) # Removendo a aposta inválida
                 print('Valor inválido, tente novamente')
-                aposta=int(input('Digite o valor que deseja apostar: '))
+                aposta=int(input('Digite o valor que deseja apostar ou "0" para sair do jogo: '))
                 lista_apostas.append(aposta) # Adicionando uma nova aposta válida (ou não hehe)
                 if aposta==0:
                     lista_final.append(lista_fichas[z])
@@ -148,13 +149,13 @@ def jogo():
         pontos_banco=0 # Pontuação inicial do banco
 
         # Pontuação banco no primeiro par de cartas:
-        pontos_banco=pontuacao(pontos_banco, cartas)
-        pontos_banco=pontuacao(pontos_banco, cartas)
+        pontos_banco=(pontuacao(pontos_banco, cartas))[0]
+        pontos_banco=(pontuacao(pontos_banco, cartas))[0]
         print('Pontos do banco no primeiro par de cartas: {}'.format(pontos_banco))
 
         # Pontuação dos jogadores no primeiro par de cartas:
-        pontos_jogador=pontuacao(pontos_jogador, cartas)
-        pontos_jogador=pontuacao(pontos_jogador, cartas)
+        pontos_jogador=(pontuacao(pontos_jogador, cartas))[0]
+        pontos_jogador=(pontuacao(pontos_jogador, cartas))[0]
         print('Pontos do(s) jogador(es) no primeiro par de cartas: {}'.format(pontos_jogador))
 
         # Adicionar regras adicionais para terceira carta aqui?
@@ -166,14 +167,32 @@ def jogo():
 
         elif pontos_banco<6 or pontos_jogador<6: # Validando terceira carta
 
-            if pontos_banco<6: # Validando terceira carta banco
-                pontos_banco=pontuacao(pontos_banco, cartas)
+            if pontos_jogador<6: # Validando terceira carta jogador
+                teste=pontuacao(pontos_jogador, cartas)
+                pontos_jogador=teste[0]
+                print('Pontos do jogador após a terceira carta: {}'.format(pontos_jogador))
+
+                if pontos_banco<6: # Validando terceira carta banco
+                    if pontos_banco==3 and teste[1]!=8:
+                        pontos_banco=(pontuacao(pontos_banco, cartas))[0]
+                        print('Pontos do banco após a terceira carta: {}'.format(pontos_banco))
+                    
+                    elif pontos_banco==4 and (teste[1] not in (0, 1, 8, 9)):
+                        pontos_banco=(pontuacao(pontos_banco, cartas))[0]
+                        print('Pontos do banco após a terceira carta: {}'.format(pontos_banco))
+                    
+                    elif pontos_banco==5 and (teste[1] not in (0, 1, 2, 3, 8, 9)):
+                        pontos_banco=(pontuacao(pontos_banco, cartas))[0]
+                        print('Pontos do banco após a terceira carta: {}'.format(pontos_banco))
+                    
+                    elif pontos_banco in (0, 1, 2):
+                        pontos_banco=(pontuacao(pontos_banco, cartas))[0]
+                        print('Pontos do banco após a terceira carta: {}'.format(pontos_banco))
+            
+            elif pontos_banco<6:
+                pontos_banco=(pontuacao(pontos_banco, cartas))[0]
                 print('Pontos do banco após a terceira carta: {}'.format(pontos_banco))
 
-            if pontos_jogador<6: # Validando terceira carta jogador
-                pontos_jogador=pontuacao(pontos_jogador, cartas)
-                print('Pontos do jogador após a terceira carta: {}'.format(pontos_jogador))
-            
             # Vitória:
             vitoria=vitorioso(pontos_jogador, pontos_banco)
 
